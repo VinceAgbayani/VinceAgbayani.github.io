@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link href="https://fonts.googleapis.com/css?family=Allerta" rel="stylesheet">
+</head>
+<body class = "mod">
+	<div class="title_mod">
+		<p>Jeopardy!</p>
+	</div>
+	<div id="main" class="grid_wrapper">
+	</div>
+<script type="text/javascript">
+const x = 'http://jservice.io/api/categories?count=5&offset=10'
+var categories = []
+
+let getData = function(url) {
+	return new Promise(function(resolve, reject) {
+		let xhr = new XMLHttpRequest()
+		xhr.onload = function() {
+			if (xhr.status ==  200) {
+	   		resolve(xhr.response)
+	   		console.log(JSON.parse(xhr.response))
+	  		} else {
+	    		reject(xhr.responseText)
+			}
+		}
+		xhr.onerror = function() {
+  			reject(Error('Network Error'))
+		}
+		xhr.open('GET', url)
+		xhr.send()
+	})
+}
+
+let urls = [
+'http://jservice.io/api/category?id=11498',
+'http://jservice.io/api/category?id=11499',
+'http://jservice.io/api/category?id=11500',
+'http://jservice.io/api/category?id=11504',
+'http://jservice.io/api/category?id=11542',
+]
+
+
+let requestsArray = []
+getData(x).then(res=> {
+	categories = JSON.parse(res)
+	for (let i = 0; i < 5; i++) {
+		requestsArray.push(getData(urls[i]))
+	}
+	return Promise.all([])
+})
+.then(res => {
+	Promise.all(requestsArray).then(res=> {
+		requestsArray = res
+		for (let i = 0; i < 5; i++) {
+			requestsArray[i] = JSON.parse(requestsArray[i])
+			var new_div = document.createElement('div')
+			id_current = 'section' + i
+			new_div.id = id_current
+			new_div.classList.add("grid_wrapper")
+			document.getElementById("main").appendChild(new_div)
+
+			var new_t = document.createElement('p')
+			new_t.innerHTML = requestsArray[i].title
+			new_t.classList.add("grid_panel")
+			document.getElementById(id_current).appendChild(new_t)
+			if(i==3)
+			{
+				for(let j = 0; j<requestsArray[i].clues.length/2; j++)
+				{
+					var new_p = document.createElement('p')
+					e_id_current = id_current + "e" + j 
+					new_p.id = e_id_current
+					new_p.innerHTML = requestsArray[i].clues[j].value
+					new_p.classList.add("grid_panel")
+					new_p.setAttribute("onclick","display_modal()")
+					document.getElementById(id_current).appendChild(new_p)
+					
+					var new_q = document.createElement('div')
+					q_id = id_current + "-" + requestsArray[i].clues[j].value
+					new_q.id = q_id
+					new_q.classList.add("modal")
+					document.getElementById(e_id_current).appendChild(new_q)
+
+					var q_content = document.createElement('p')
+					q_content.classList.add("modal_content")
+					q_content.innerHTML = requestsArray[i].clues[j].question
+					document.getElementById(q_id).appendChild(q_content)
+
+				}
+
+			}
+			else
+			{
+				for(let j = 0; j<requestsArray[i].clues.length; j++)
+				{
+					var new_p = document.createElement('p')
+					e_id_current = id_current + "e" + j 
+					new_p.id = e_id_current
+					new_p.innerHTML = requestsArray[i].clues[j].value
+					new_p.classList.add("grid_panel")
+					new_p.setAttribute("onclick","display_modal(this.childNodes[1].id)")
+					document.getElementById(id_current).appendChild(new_p)
+					
+					var new_q = document.createElement('div')
+					q_id = id_current + "-" + requestsArray[i].clues[j].value 	
+					new_q.id = q_id
+					new_q.classList.add("modal")
+					
+					document.getElementById(e_id_current).appendChild(new_q)
+					new_q.setAttribute("onclick","display_ans(this.childNodes[1].id)")
+					var q_content = document.createElement('p')
+					q_content.classList.add("modal_content")
+					q_content.innerHTML = requestsArray[i].clues[j].question 
+					document.getElementById(q_id).appendChild(q_content)
+
+					var ans_content = document.createElement('p')
+					ans_content.id = q_id + "ans"
+					ans_content.classList.add("modal_content")
+					ans_content.innerHTML = requestsArray[i].clues[j].answer
+					ans_content.classList.add("mod2")
+					document.getElementById(q_id).appendChild(ans_content)
+				}
+
+			}
+				
+		}
+	})
+})
+.catch(error => {
+	console.log(error)
+})
+
+function display_modal(target_id)
+{
+	var dsp = document.getElementById(target_id)
+	dsp.style.display = "block"
+
+	window.onclick = function(event) 
+	{
+	    if (event.target == dsp) 
+	    {
+	        dsp.style.display = "none";
+	    }
+	}
+}
+
+function display_ans(target_id)
+{
+	var inv = document.getElementById(target_id)
+	inv.style.visibility = "visible";
+}
+
+
+
+
+</script>
+</body>
+</html>
+
+
