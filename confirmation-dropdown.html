@@ -922,6 +922,7 @@
     append_personal.appendChild(ct);  
     append_personal.appendChild(zc); 
     obj = JSON.parse(localStorage.getItem("purchase_data"))
+    localStorage.clear()
     if(typeof obj==='undefined'||obj===null)
     {
       var obj = [];
