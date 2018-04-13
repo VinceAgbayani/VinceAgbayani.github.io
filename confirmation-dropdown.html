@@ -923,7 +923,7 @@
     append_personal.appendChild(zc); 
     obj = JSON.parse(localStorage.getItem("purchase_data"))
     localStorage.clear()
-    if(typeof obj==='undefined'||obj===null)
+    if(typeof obj==='undefined'||obj==null)
     {
       var obj = [];
       var style_choice = localStorage.getItem("style_choice");
@@ -940,7 +940,7 @@
       var style_color = localStorage.getItem("style_color_choice");
       var price_total = localStorage.getItem("price_total");
       var size_data = localStorage.getItem("size_data");
-      obj.push({"style": style_choice, "color": style_color, "price": price_total, "size": size_data, "full_name": full_name, "cellphone": cp_number, "landline": lnd_number, "email": email_addr, "address": physical_adrr, "city":city, "zipcode":zipcode})
+      obj.push({"style:": style_choice, "color": style_color, "price": price_total, "size": size_data, "full_name": full_name, "cellphone": cp_number, "landline": lnd_number, "email": email_addr, "address": physical_adrr, "city":city, "zipcode":zipcode})
       localStorage.setItem("purchase_data",JSON.stringify(obj));
     }
   </script>
